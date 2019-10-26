@@ -19,6 +19,9 @@ void CP_UpdateSamp();
 void CP_StopSong(); 
 void CP_Mute_Chan(UINT8 chan);
 void CP_Reset_Chan(UINT8 chan);
+void CP_SND_OFF();
+void CP_SND_ON();
+void CP_Pause();
 
 
 //bank = rom bank where the song is stored
@@ -51,6 +54,32 @@ void CP_StopMusic(){
 		CP_SamBank = 0;
 		CP_ON = 0;
 		CP_StopSong();
-		*(UBYTE*)0xFF26 = 0;
+		CP_SND_OFF();
 	}
+}
+
+void CP_Pause(){
+	if( CP_ON == 1){
+		CP_ON = 0;
+		CP_Reset_Chan(0);
+		CP_Reset_Chan(1);
+		CP_Reset_Chan(2);		
+		CP_Reset_Chan(4);		
+	}
+}
+
+void CP_Play(){
+	CP_ON = 1;
+}
+
+
+void CP_SND_OFF(){
+	*(UBYTE*)0xFF26 = 0x00;
+}
+
+void CP_SND_ON(){
+	*(UBYTE*)0xFF24 = 0x77; //mute
+	*(UBYTE*)0xFF25 = 0x33; //balance
+	*(UBYTE*)0xFF26 = 0xFB; //sound
+	
 }
